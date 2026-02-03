@@ -13,11 +13,15 @@ public class WebConfig {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/api/**") // Apply to all API paths
-                        .allowedOrigins("http://localhost:3000") // Your React URL
-                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                registry.addMapping("/**") // Apply to all paths including /api
+                        .allowedOrigins(
+                            "http://localhost:3000",           // For your local testing
+                            "https://erp-finance-frontend.vercel.app/login"  // <-- PASTE YOUR VERCEL URL HERE
+                        )
+                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH")
                         .allowedHeaders("*")
-                        .allowCredentials(true);
+                        .allowCredentials(true)
+                        .maxAge(3600); 
             }
         };
     }
