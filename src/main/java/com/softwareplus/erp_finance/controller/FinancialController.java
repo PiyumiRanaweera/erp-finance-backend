@@ -1,12 +1,28 @@
 package com.yourcompany.erp.controller;
 
 import org.springframework.web.bind.annotation.*;
+import org.springframework.http.ResponseEntity;
 import java.util.*;
 
 @RestController
 @RequestMapping("/api")
-@CrossOrigin(origins = "http://localhost:3001") // This fixes the CORS error
+// Ensures Vercel frontend can access the Railway backend
+@CrossOrigin(origins = "https://erp-finance-frontend.vercel.app") 
 public class FinancialController {
+
+    /**
+     * FIX: Missing Dashboard Summary Endpoint
+     * This addresses the 404 error: /api/finance/dashboard/summary
+     */
+    @GetMapping("/finance/dashboard/summary")
+    public ResponseEntity<Map<String, Object>> getDashboardSummary() {
+        Map<String, Object> summary = new HashMap<>();
+        summary.put("totalRevenue", 452500.0);
+        summary.put("totalExpenses", 125000.0);
+        summary.put("netIncome", 327500.0);
+        summary.put("cashBalance", 52450.0);
+        return ResponseEntity.ok(summary);
+    }
 
     // Mock data for Accounts
     @GetMapping("/accounts")
@@ -33,7 +49,7 @@ public class FinancialController {
         return Map.of("isLocked", false);
     }
 
-    // Mock data for Invoices (Accounts Payable)
+    // Mock data for Invoices
     @GetMapping("/invoices")
     public List<Map<String, Object>> getInvoices() {
         return Arrays.asList(
@@ -44,13 +60,9 @@ public class FinancialController {
     @PostMapping("/journals")
     public Map<String, Object> createJournalEntry(@RequestBody Map<String, Object> payload) {
         System.out.println("Received Journal Entry: " + payload);
-    
-    // In a real app, you would use a Repository to save to a database here
-    // journalRepository.save(new Journal(payload));
-
         Map<String, Object> response = new HashMap<>();
-        response.put("status", "success"); // Use .put() for Maps
+        response.put("status", "success");
         response.put("message", "Journal Entry Posted Successfully");
         return response;
-}
+    }
 }
